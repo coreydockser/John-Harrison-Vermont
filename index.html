@@ -84,6 +84,11 @@
               
             }
 
+            .tooltip{
+                max-width: 200px;
+                text-wrap:wrap;
+            }
+
 
 
        
@@ -116,8 +121,11 @@
                     lon : d.lon
                 }
             })
+
+            const house_radius = await d3.json("house_location.geojson")
         
             console.log(preaching_locations)
+            console.log(house_radius)
 
 
 
@@ -140,7 +148,6 @@
                 attribution: `Data Source: Lexi Krupp | &copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | <i>Corey Dockser / Vermont Public </i>`,
             }).addTo(map);
            
-
 
             
             const house_icon = L.divIcon({
@@ -167,22 +174,22 @@
                     }
                 )
                 .bindTooltip(`<h2 style="margin:0px">${preaching_locations[index].paper}</h3>
-                <h3 style="margin:0px">${preaching_locations[index].preaching_date}</h3><img src="img/${preaching_locations[index]["img"]}" class="newspaper">`, {
+                <h3 style="margin:0px">${preaching_locations[index].preaching_date}</h3>
+                <h4 style="margin:0px">${preaching_locations[index].town}</h4>
+                <img src="img/${preaching_locations[index]["img"]}" class="newspaper">
+                <div>${preaching_locations[index].notes != "" ? "Note: " + preaching_locations[index].notes : ""}`, {
                     className: "tooltip"
                 }).on("click", function(d) { map.flyTo(d.latlng, 12, {duration: .75})
                 })
                 .addTo(marker_layer);
-            }
-
-            
-            
-
-            
-           
-
-
 
         }
+
+        const house = L.circle(house_radius, {
+            color: "black"
+        }).addTo(map)
+
+    }
         createMap()
     </script>
     
