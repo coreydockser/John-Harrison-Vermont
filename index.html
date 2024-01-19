@@ -60,13 +60,15 @@
 
         #newspaper_pane {
             position: absolute;
-            width: 50%;
+            width: 45%;
 
             height: 80%;
             left: 50%;
             z-index: 800;
             display: none;
             border-radius: 20px;
+            border-color: rgb(212, 212, 212);
+            border-width: 3px;
             background-color: white;
             padding: 10px;
             overflow-y: scroll;
@@ -156,7 +158,8 @@
 
             const starting_coords = [44.134913443750726, -72.23510742187501]
             const starting_zoom = 8
-
+            // used to see if this is the first time a user is clicking a marker
+            var first_flag = 0;
 
             const map = L.map("leaflet", {
 
@@ -210,11 +213,12 @@
                         map.flyTo([d.latlng["lat"], d.latlng["lng"] + .05], 12, { duration: .75 })
                         newspaper_pane = document.getElementById("newspaper_pane")
                         newspaper_pane.style.display = "block"
-                        newspaper_pane.innerHTML = `<button id="close_button">&times;</button><h2 style="margin:0px">${preaching_locations[index].paper}</h3>
+                        newspaper_pane.innerHTML = `${first_flag == 0 ? '<div style="margin-right: 20px"><span>Click me to return to the map -\></span>' : ''}<button id="close_button">&times;</button><h2 style="margin:0px">${preaching_locations[index].paper}</h2>
                 <h3 style="margin:0px">${preaching_locations[index].preaching_date}</h3>
-                <h4 style="margin:0px">${preaching_locations[index].town}</h4>
+                <h4 style="margin:0px">${preaching_locations[index].town}</h4></div>
                 <div>${preaching_locations[index].notes}</div>
                 <img src="img/${preaching_locations[index]["img"]}" class="newspaper">`
+                first_flag += 1;
                 map.dragging.disable();
                             map.touchZoom.disable();
                             map.doubleClickZoom.disable();
@@ -245,7 +249,7 @@
 
     <div>
         <h2 style="margin:0px">Where John Harrison preached in Vermont</h2>
-        <div>Based on archival newspaper records and from 1886 to 1889 and historical maps</div>
+        <div>Based on archival newspaper records from 1886 to 1889 and historical maps</div>
         <div id="leaflet">
             <div id=newspaper_pane></div>
         </div>
