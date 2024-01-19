@@ -148,8 +148,7 @@
 
             const house_radius = await d3.json("house_location.geojson")
 
-            console.log(preaching_locations)
-            console.log(house_radius)
+           
 
 
 
@@ -176,9 +175,6 @@
             // pane for popups
             var pane = map.createPane('fixed', document.getElementById("map"))
 
-            map.on("click", function (d) {
-                console.log(`[${d.latlng.lat}, ${d.latlng.lng}]`)
-            })
 
             const house_icon = L.divIcon({
                 html: `<i class="fa-solid fa-house fa-xl"></i>`,
@@ -208,7 +204,7 @@
                 <div>${preaching_locations[index].notes}</div>`, {
                         className: "tooltip"
 
-                    }).on("click", function (d) {
+                    }).on("mousedown contextmenu", function (d) {
 
                         map.flyTo([d.latlng["lat"], d.latlng["lng"] + .05], 12, { duration: .75 })
                         newspaper_pane = document.getElementById("newspaper_pane")
@@ -218,12 +214,12 @@
                 <h4 style="margin:0px">${preaching_locations[index].town}</h4></div>
                 <div>${preaching_locations[index].notes}</div>
                 <img src="img/${preaching_locations[index]["img"]}" class="newspaper">`
-                first_flag += 1;
-                map.dragging.disable();
-                            map.touchZoom.disable();
-                            map.doubleClickZoom.disable();
-                            map.scrollWheelZoom.disable();
-                           
+                        first_flag += 1;
+                        map.dragging.disable();
+                        map.touchZoom.disable();
+                        map.doubleClickZoom.disable();
+                        map.scrollWheelZoom.disable();
+
 
                         document.getElementById("close_button").addEventListener("click", function () {
                             newspaper_pane.innerHTML = ``;
@@ -255,8 +251,9 @@
         </div>
         <div style="font-size: 14px; color:rgb(118, 118, 118)">
             We found 11 reported instances of John Harrison preaching in Vermont over three years while he was living in
-            west Norwich. Note that the text of these papers is printed here unaltered. Locations are 
-            not necessarily the exact location represented in the papers and the site of Harrison's house has similarly been hidden.
+            west Norwich. Note that the text of these papers is printed here unaltered. Locations are
+            not necessarily the exact location represented in the papers and the site of Harrison's house has similarly
+            been hidden.
         </div>
 
 
