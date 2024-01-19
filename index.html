@@ -209,7 +209,7 @@
                         map.flyTo([d.latlng["lat"], d.latlng["lng"] + .05], 12, { duration: .75 })
                         newspaper_pane = document.getElementById("newspaper_pane")
                         newspaper_pane.style.display = "block"
-                        newspaper_pane.innerHTML = `${first_flag == 0 ? '<div style="margin-right: 20px"><span>Click me to return to the map -\></span>' : ''}<button id="close_button">&times;</button><h2 style="margin:0px">${preaching_locations[index].paper}</h2>
+                        newspaper_pane.innerHTML = `${first_flag == 0 ? '<div style="padding-right: 40px"><span>Click me to return to the map -\></span>' : ''}<button id="close_button">&times;</button><h2 style="margin:0px">${preaching_locations[index].paper}</h2>
                 <h3 style="margin:0px">${preaching_locations[index].preaching_date}</h3>
                 <h4 style="margin:0px">${preaching_locations[index].town}</h4></div>
                 <div>${preaching_locations[index].notes}</div>
