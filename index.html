@@ -205,7 +205,7 @@
                         className: "tooltip"
 
 
-                    }).on("mousedown contextmenu", function (d) {
+                    }).on("click", function (d) {
 
                         map.flyTo([d.latlng["lat"], d.latlng["lng"] + .05], 12, { duration: .75 })
                         newspaper_pane = document.getElementById("newspaper_pane")
