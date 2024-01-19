@@ -167,7 +167,7 @@
             );
 
             L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-                attribution: `Data Source: Lexi Krupp | &copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | <i>Corey Dockser / Vermont Public </i>`,
+                attribution: `Data Source: <a href="https://newspapers.com">newspapers.com</a>, <a href="https://historicmapworks.com">historicmapworks.com</a> | &copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | <i>Corey Dockser / Vermont Public </i>`,
             }).addTo(map);
 
             // pane for popups
@@ -213,8 +213,8 @@
                         newspaper_pane.innerHTML = `<button id="close_button">&times;</button><h2 style="margin:0px">${preaching_locations[index].paper}</h3>
                 <h3 style="margin:0px">${preaching_locations[index].preaching_date}</h3>
                 <h4 style="margin:0px">${preaching_locations[index].town}</h4>
-                <img src="img/${preaching_locations[index]["img"]}" class="newspaper">
-                <div>${preaching_locations[index].notes}</div>`
+                <div>${preaching_locations[index].notes}</div>
+                <img src="img/${preaching_locations[index]["img"]}" class="newspaper">`
                 map.dragging.disable();
                             map.touchZoom.disable();
                             map.doubleClickZoom.disable();
