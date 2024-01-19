@@ -13,8 +13,6 @@
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet' type='text/css'>
 
     <style>
-      
-
         body {
             font-family: "Poppins", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
             letter-spacing: 0.08px;
@@ -23,9 +21,10 @@
         }
     </style>
 
-   
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"
         integrity="sha512-M7nHCiNUOwFt6Us3r8alutZLm9qMt4s9951uo8jqO4UwJ1hziseL6O3ndFyigx6+LREfZqnhHxYjKRJ8ZQ69DQ=="
@@ -33,136 +32,164 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
         integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://kit.fontawesome.com/c133de535f.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/c133de535f.js" crossorigin="anonymous"></script>
 
 
 
 
     <style>
-
- 
-
         #leaflet {
-            margin: auto;
             font-family: Poppins;
             z-index: 0;
+            min-height: 500px;
+            max-height: 800px;
+            max-width: 700px
         }
 
-       
-       
+
+
 
         .customIcon {
             text-align: center;
             line-height: 20px;
             filter: drop-shadow(1px 1px 1px);
-            stroke:black;
-            
+            stroke: black;
+
         }
 
-      
 
-        
+        #newspaper_pane {
+            position: absolute;
+            width: 50%;
 
-       
+            height: 80%;
+            left: 50%;
+            z-index: 800;
+            display: none;
+            border-radius: 20px;
+            background-color: white;
+            padding: 10px;
+            overflow-y: scroll;
+            cursor: default;
+        }
 
-            .leaflet-bottom.leaflet-left {
-                width: 100%;
+        #close_button {
+            position: absolute;
+            right: 20px;
+            border: none;
+            background: none;
 
-            }
+            font-size: 32px;
+            opacity: 75%;
+            cursor: pointer;
 
-            .leaflet-bottom.leaflet-right {
-                width: 50%;
-            }
+        }
 
-            h2, h3, h4 {
-                
-            }
-
-            .newspaper {
-                max-width: 200px;
-                
-              
-            }
-
-            .tooltip{
-                max-width: 200px;
-                text-wrap:wrap;
-            }
+        #close_button:hover {
+            opacity: 100%;
+        }
 
 
 
-       
+
+
+        .leaflet-bottom.leaflet-left {
+            width: 100%;
+
+        }
+
+        .leaflet-bottom.leaflet-right {
+            width: 50%;
+        }
+
+        h2,
+        h3,
+        h4 {}
+
+        .newspaper {
+            width: 100%
+        }
+
+        .tooltip {
+            width: 200px;
+            white-space: normal;
+        }
     </style>
 
 
 </head>
 
 <body>
-   
+
 
     <script>
 
         async function createMap() {
 
 
-           
+
             // note if preaching date is empty, choose a different icon
             const preaching_locations = await d3.csv("preaching_locations.csv", function (d) {
                 return {
-                    preaching_date : d["Date he's preaching (likely)"],
-                    article_date : d["Date of article"] ,
-                    paper : d["Newspaper"],
-                    img : d.img ,
-                    town : d["Town"],
-                    venue : d["Venue"],
-                    notes : d["Notes"],
+                    preaching_date: d["Date he's preaching (likely)"],
+                    article_date: d["Date of article"],
+                    paper: d["Newspaper"],
+                    img: d.img,
+                    town: d["Town"],
+                    venue: d["Venue"],
+                    notes: d["Notes"],
                     coords: d.coords,
-                    lat : d.lat,
-                    lon : d.lon
+                    lat: d.lat,
+                    lon: d.lon
                 }
             })
 
             const house_radius = await d3.json("house_location.geojson")
-        
+
             console.log(preaching_locations)
             console.log(house_radius)
 
 
 
-    
-            
 
 
+
+            const starting_coords = [44.134913443750726, -72.23510742187501]
+            const starting_zoom = 8
 
 
             const map = L.map("leaflet", {
-               
-             
+
+
             }).setView(
-                [44.07874914580646, -71.93696501739662
-                ],
-                8
+                starting_coords,
+                starting_zoom
             );
 
             L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
                 attribution: `Data Source: Lexi Krupp | &copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | <i>Corey Dockser / Vermont Public </i>`,
             }).addTo(map);
-           
 
-            
+            // pane for popups
+            var pane = map.createPane('fixed', document.getElementById("map"))
+
+            map.on("click", function (d) {
+                console.log(`[${d.latlng.lat}, ${d.latlng.lng}]`)
+            })
+
             const house_icon = L.divIcon({
-                            html: `<i class="fa-solid fa-house fa-xl"></i>`,
-                            iconSize: [20, 20],
-                            className: "customIcon"
-                        })
+                html: `<i class="fa-solid fa-house fa-xl"></i>`,
+                iconSize: [20, 20],
+                className: "customIcon"
+            })
 
             const preach_icon = L.divIcon({
-                            html: `<i class="fa-solid fa-location-dot fa-xl" style="color: #ff4000;"></i>`,
-                            iconSize: [20, 20],
-                            iconAnchor: [10, 20],
-                            tooltipAnchor: [0, -13],
-                            className: "customIcon"
-                        })
+                html: `<i class="fa-solid fa-location-dot fa-xl" style="color: #ff4000;"></i>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 20],
+                tooltipAnchor: [0, -13],
+                className: "customIcon"
+            })
             var marker_layer = L.featureGroup()
             marker_layer.addTo(map)
 
@@ -173,31 +200,60 @@
                         icon: preaching_locations[index]["preaching_date"] == "" ? house_icon : preach_icon
                     }
                 )
-                .bindTooltip(`<h2 style="margin:0px">${preaching_locations[index].paper}</h3>
+                    .bindTooltip(`<h2 style="margin:0px">${preaching_locations[index].town}</h3>
+                <h3 style="margin:0px">${preaching_locations[index].preaching_date}</h3>
+                <div>${preaching_locations[index].notes}</div>`, {
+                        className: "tooltip"
+
+                    }).on("click", function (d) {
+
+                        map.flyTo([d.latlng["lat"], d.latlng["lng"] + .05], 12, { duration: .75 })
+                        newspaper_pane = document.getElementById("newspaper_pane")
+                        newspaper_pane.style.display = "block"
+                        newspaper_pane.innerHTML = `<button id="close_button">&times;</button><h2 style="margin:0px">${preaching_locations[index].paper}</h3>
                 <h3 style="margin:0px">${preaching_locations[index].preaching_date}</h3>
                 <h4 style="margin:0px">${preaching_locations[index].town}</h4>
                 <img src="img/${preaching_locations[index]["img"]}" class="newspaper">
-                <div>${preaching_locations[index].notes != "" ? "Note: " + preaching_locations[index].notes : ""}`, {
-                    className: "tooltip"
-                }).on("click", function(d) { map.flyTo(d.latlng, 12, {duration: .75})
-                })
-                .addTo(marker_layer);
+                <div>${preaching_locations[index].notes}</div>`
+                map.dragging.disable();
+                            map.touchZoom.disable();
+                            map.doubleClickZoom.disable();
+                            map.scrollWheelZoom.disable();
+                           
+
+                        document.getElementById("close_button").addEventListener("click", function () {
+                            newspaper_pane.innerHTML = ``;
+                            newspaper_pane.style.display = "none"
+                            map.dragging.enable();
+                            map.touchZoom.enable();
+                            map.doubleClickZoom.enable();
+                            map.scrollWheelZoom.enable();
+                            map.flyTo(starting_coords, starting_zoom, { duration: .75 })
+                        })
+                    })
+                    .addTo(marker_layer);
+
+            }
+
+            const house = L.geoJSON(house_radius, {
+                color: "black"
+            }).addTo(map)
 
         }
-
-        const house = L.circle(house_radius, {
-            color: "black"
-        }).addTo(map)
-
-    }
         createMap()
     </script>
-    
-    <div><h2 style="margin:0px">John Harrison's life in Vermont</h2>
-    <div>Subtitle with additional information.</div>
-    <div id="leaflet" style="min-height: 500px; max-height: 800px; max-width: 700px"></div>
-    <div style="font-size: 14px; color:rgb(118, 118, 118)">
-        Reporter Lexi Krupp found at least n reported instances of John Harrison preaching in [area of Vermont].</div>
+
+    <div>
+        <h2 style="margin:0px">Where John Harrison preached in Vermont</h2>
+        <div>Based on archival newspaper records and from 1886 to 1889 and historical maps</div>
+        <div id="leaflet">
+            <div id=newspaper_pane></div>
+        </div>
+        <div style="font-size: 14px; color:rgb(118, 118, 118)">
+            We found 11 reported instances of John Harrison preaching in Vermont over three years while he was living in
+            west Norwich. Note that the text of these papers is printed here unaltered. Locations are 
+            not necessarily the exact location represented in the papers and the site of Harrison's house has similarly been hidden.
+        </div>
 
 
 
@@ -205,12 +261,12 @@
 
 
 
-    <script>
-        window.onload = function () {
-            pymChild = new pym.Child({});
-            pym.Child({ polling: 500 });
-        };
-    </script>
+        <script>
+            window.onload = function () {
+                pymChild = new pym.Child({});
+                pym.Child({ polling: 500 });
+            };
+        </script>
 
 
 </body>
