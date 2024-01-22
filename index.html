@@ -32,7 +32,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
         integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://kit.fontawesome.com/c133de535f.js" crossorigin="anonymous"></script>
 
 
 
@@ -62,7 +61,7 @@
             position: absolute;
             width: 45%;
 
-            height: 80%;
+            max-height: 80%;
             left: 50%;
             z-index: 800;
             display: none;
@@ -169,26 +168,20 @@
             );
 
             L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
-                attribution: `Data Source: <a href="https://newspapers.com">newspapers.com</a>, <a href="https://historicmapworks.com">historicmapworks.com</a> | &copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | <i>Corey Dockser / Vermont Public </i>`,
+                attribution: `Data Source: <a href="https://newspapers.com">newspapers.com</a>, <a href="https://historicmapworks.com">historicmapworks.com</a> | &copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> | House icon by <a href="https://www.iconfinder.com/tmthymllr">Timothy Miller</a> | <i>Corey Dockser / Vermont Public </i>`,
             }).addTo(map);
 
             // pane for popups
             var pane = map.createPane('fixed', document.getElementById("map"))
 
 
-            const house_icon = L.divIcon({
-                html: `<i class="fa-solid fa-house fa-xl"></i>`,
+            const house_icon = L.icon({
+                iconUrl: `img/126572_home_house_icon.png`,
                 iconSize: [20, 20],
                 className: "customIcon"
             })
 
-            const preach_icon = L.divIcon({
-                html: `<i class="fa-solid fa-location-dot fa-xl" style="color: #ff4000;"></i>`,
-                iconSize: [20, 20],
-                iconAnchor: [10, 20],
-                tooltipAnchor: [0, -13],
-                className: "customIcon"
-            })
+          
             var marker_layer = L.featureGroup()
             marker_layer.addTo(map)
 
@@ -196,7 +189,7 @@
                 var marker = L.marker(
                     [preaching_locations[index]["lat"], preaching_locations[index]["lon"]],
                     {
-                        icon: preaching_locations[index]["preaching_date"] == "" ? house_icon : preach_icon
+                        icon: preaching_locations[index]["preaching_date"] == "" ? house_icon : L.Icon.Default.prototype
                     }
                 )
                     .bindTooltip(`<h2 style="margin:0px">${preaching_locations[index].town}</h3>
